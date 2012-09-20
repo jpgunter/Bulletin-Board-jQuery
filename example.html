@@ -1,0 +1,86 @@
+<html>
+<head>
+<style type="text/css">
+body{font-family: "Helvetica", "Ariel", sans-serif}
+.post_text {height:100%;width:100%; padding:10px;}
+.post_box {background-color:white; border:2px solid gray; border-radius:2px;}
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+
+var x1, x2, y1, y2;
+var isDrawing, isPosting = false;
+
+function postToBoard(){
+  var text = $("#input_box").val();
+  $("#input_box").parent().append('<p class="post_text">' + text + "</p>");
+  $("#input_box").remove();
+  $("#post_button").remove();
+  isDrawing = false;
+  isPosting = false;
+  $("#cur_box").attr("id", "none");
+}
+
+$(document).ready(function(){
+
+  $("#board").mousedown(function(e){
+    if(!(isDrawing || isPosting)){
+      x1 = e.pageX;
+      y1 = e.pageY;
+      isDrawing = true;
+      $("#board").append('<div class="post_box" id="cur_box" style="position:absolute; top:'+ y1 +'px; left: '+ x1 +'px; width: '+ 0 +'px; height: '+ 0 +'px;"></div>');
+    }
+  });
+  $("#board").mousemove(function(e){
+    if(isDrawing && !isPosting){
+      x2 = e.pageX;
+      y2 = e.pageY;
+      var width, height = 0;
+      var x, y = 0;
+      if(x1 < x2){
+        x = x1; width = x2 - x1;
+      } else {
+        x = x2; width = x1 - x2;
+      }
+      if(y1 < y2){
+        y = y1; height = y2 - y1;
+      } else {
+        y = y2; height = y1 - y2;
+      }
+      $("#cur_box").attr("style", 'position:absolute; top:'+ y +'px; left: '+ x +'px; width: '+ width +'px; height: '+height+'px;');
+    }
+  });
+  $("#board").mouseup(function(e){
+    if(isDrawing && !isPosting){
+      x2 = e.pageX;
+      y2 = e.pageY;
+      var width, height = 0;
+      var x, y = 0;
+      if(x1 < x2){
+        x = x1; width = x2 - x1;
+      } else {
+        x = x2; width = x1 - x2;
+      }
+      if(y1 < y2){
+        y = y1; height = y2 - y1;
+      } else {
+        y = y2; height = y1 - y2;
+      }
+      $("#cur_box").attr("style", 'position:absolute; top:'+ y +'px; left: '+ x +'px; width: '+ width +'px; height: '+height+'px;');
+      
+      $("#cur_box").append('<textarea style="width:100%;height:' + (height - 25) + 'px;" id="input_box">Enter text here...</textarea><input id="post_button" type="submit" value="Post" onclick="postToBoard()">');
+      isDrawing = false;
+      isPosting = true;
+    }
+  });
+  
+})
+</script>
+<body>
+
+
+<div style="width: 100%; height: 100%; padding:0px;margin:0px;" id="board">
+<div class="post_box" id="temp_box" style="display:none;"></div>
+</div>
+</body>
+</html>
